@@ -1,0 +1,159 @@
+{
+    "name": "Azure Network Security Group Rules",
+    "version": "1.4.0",
+    "rules": [
+      {
+        "id": "azure_nsg_default_inbound_rule",
+        "name": "Default Inbound Rule Deny",
+        "description": "Ensure that the NSG default inbound rule is set to deny to prevent unauthorized access.",
+        "severity": "high",
+        "remediation": "Configure the NSG to have a default deny inbound rule.",
+        "query": "properties.defaultInboundAction == 'Deny'"
+      },
+      {
+        "id": "azure_nsg_default_outbound_rule",
+        "name": "Default Outbound Rule Allow",
+        "description": "Ensure that the NSG default outbound rule is set appropriately based on your security policy.",
+        "severity": "medium",
+        "remediation": "Verify that the NSG's default outbound rule aligns with your organization’s security requirements.",
+        "query": "properties.defaultOutboundAction == 'Allow'"
+      },
+      {
+        "id": "azure_nsg_restrict_management_ports",
+        "name": "Restrict Management Ports",
+        "description": "Ensure that NSG rules for management ports such as RDP (3389) and SSH (22) allow traffic only from trusted IP ranges.",
+        "severity": "high",
+        "remediation": "Limit access to management ports by configuring NSG rules to allow only specific, trusted source IP addresses.",
+        "query": "all(properties.rules[?(@.destinationPortRange=='22' || @.destinationPortRange=='3389')].sourceAddressPrefix != '*')"
+      },
+      {
+        "id": "azure_nsg_logging_enabled",
+        "name": "NSG Flow Logs Enabled",
+        "description": "Ensure that NSG flow logs are enabled to monitor network traffic and detect anomalies.",
+        "severity": "medium",
+        "remediation": "Enable NSG flow logs through Azure Network Watcher and configure appropriate retention and storage settings.",
+        "query": "properties.flowLogs.enabled == true"
+      },
+      {
+        "id": "azure_nsg_no_allow_all_rule",
+        "name": "No Allow All Rule",
+        "description": "Ensure that no NSG rule permits unrestricted access from any source to any destination.",
+        "severity": "high",
+        "remediation": "Review NSG rules and remove or restrict any rule that allows all traffic (i.e., source and destination set to '*' with access set to 'Allow').",
+        "query": "none(properties.rules[?(@.sourceAddressPrefix=='*' && @.destinationAddressPrefix=='*' && @.access=='Allow')])"
+      },
+      {
+        "id": "azure_nsg_specify_protocol",
+        "name": "Specified Protocol in Rules",
+        "description": "Ensure that each NSG rule specifies a particular protocol and does not leave it as 'Any', unless explicitly required.",
+        "severity": "medium",
+        "remediation": "Review NSG rules and update any rule that specifies protocol as 'Any' if not necessary.",
+        "query": "none(properties.rules[?(@.protocol=='*' || @.protocol=='Any')])"
+      },
+      {
+        "id": "azure_nsg_association",
+        "name": "NSG Association with Resources",
+        "description": "Ensure that the NSG is associated with at least one subnet or network interface.",
+        "severity": "medium",
+        "remediation": "Associate the NSG with the appropriate subnet(s) or network interface(s).",
+        "query": "length(properties.associations) > 0"
+      },
+      {
+        "id": "azure_nsg_restrict_sensitive_ports",
+        "name": "Restrict Sensitive Ports",
+        "description": "Ensure that inbound rules for sensitive ports (e.g., SQL 1433, MySQL 3306, Oracle 1521) are restricted to trusted IP addresses.",
+        "severity": "high",
+        "remediation": "Review inbound rules for sensitive ports and restrict them to specific, trusted source IP ranges.",
+        "query": "all(properties.rules[?(@.destinationPortRange=='1433' || @.destinationPortRange=='3306' || @.destinationPortRange=='1521')].sourceAddressPrefix != '*')"
+      },
+      {
+        "id": "azure_nsg_logging_retention_configured",
+        "name": "Logging Retention Configured",
+        "description": "Ensure that NSG flow logs have a retention policy configured with a retention period of at least 30 days.",
+        "severity": "medium",
+        "remediation": "Configure NSG flow logs with a retention policy of at least 30 days.",
+        "query": "properties.flowLogs.retentionPolicy.enabled == true && properties.flowLogs.retentionPolicy.days >= 30"
+      },
+      {
+        "id": "azure_nsg_no_open_inbound_icmp",
+        "name": "No Open Inbound ICMP",
+        "description": "Ensure that inbound ICMP traffic is not allowed from any source to prevent potential network discovery attacks.",
+        "severity": "low",
+        "remediation": "Restrict or disable inbound ICMP traffic from untrusted sources.",
+        "query": "none(properties.rules[?(@.protocol=='ICMP' && @.access=='Allow' && @.sourceAddressPrefix=='*')])"
+      },
+      {
+        "id": "azure_nsg_rule_priority_range",
+        "name": "Valid NSG Rule Priority Range",
+        "description": "Ensure that all NSG rule priorities are within the valid range (100 to 4096).",
+        "severity": "medium",
+        "remediation": "Review and adjust NSG rule priorities to be within the range of 100 to 4096.",
+        "query": "all(properties.rules[*].priority >= 100 && properties.rules[*].priority <= 4096)"
+      },
+      {
+        "id": "azure_nsg_rule_description_present",
+        "name": "NSG Rule Description Present",
+        "description": "Ensure that all NSG rules have a non-empty description to provide context and documentation.",
+        "severity": "medium",
+        "remediation": "Add a descriptive text to each NSG rule.",
+        "query": "all(properties.rules[*].description != null && properties.rules[*].description != '')"
+      },
+      {
+        "id": "azure_nsg_rule_direction_defined",
+        "name": "NSG Rule Direction Defined",
+        "description": "Ensure that each NSG rule has a defined direction (Inbound or Outbound).",
+        "severity": "medium",
+        "remediation": "Specify the direction for each NSG rule.",
+        "query": "all(properties.rules[*].direction != null && (properties.rules[*].direction == 'Inbound' || properties.rules[*].direction == 'Outbound'))"
+      },
+      {
+        "id": "azure_nsg_rule_unique_priority",
+        "name": "Unique NSG Rule Priorities",
+        "description": "Ensure that each NSG rule has a unique priority value to avoid conflicts.",
+        "severity": "medium",
+        "remediation": "Assign unique priority values to each NSG rule.",
+        "query": "length(unique(properties.rules[*].priority)) == length(properties.rules[*].priority)"
+      },
+      {
+        "id": "azure_nsg_rule_unique_name",
+        "name": "Unique NSG Rule Names",
+        "description": "Ensure that each NSG rule has a unique name.",
+        "severity": "medium",
+        "remediation": "Ensure that no two NSG rules share the same name.",
+        "query": "length(unique(properties.rules[*].name)) == length(properties.rules[*].name)"
+      },
+      {
+        "id": "azure_nsg_inbound_source_port_not_wildcard",
+        "name": "Inbound Source Port Not Wildcard",
+        "description": "Ensure that inbound NSG rules do not use a wildcard '*' for the source port range unless explicitly required.",
+        "severity": "medium",
+        "remediation": "Specify explicit source port ranges for inbound rules instead of using a wildcard.",
+        "query": "none(properties.rules[?(@.direction=='Inbound' && @.sourcePortRange=='*')])"
+      },
+      {
+        "id": "azure_nsg_destination_port_defined",
+        "name": "Destination Port Range Defined",
+        "description": "Ensure that every NSG rule has a defined destination port range.",
+        "severity": "medium",
+        "remediation": "Define the destination port range for each NSG rule.",
+        "query": "all(properties.rules[*].destinationPortRange != null && properties.rules[*].destinationPortRange != '')"
+      },
+      {
+        "id": "azure_nsg_valid_access_value",
+        "name": "Valid NSG Rule Access Value",
+        "description": "Ensure that NSG rule access values are either 'Allow' or 'Deny'.",
+        "severity": "medium",
+        "remediation": "Set the access property to 'Allow' or 'Deny' for all NSG rules.",
+        "query": "all(properties.rules[*].access == 'Allow' || properties.rules[*].access == 'Deny')"
+      },
+      {
+        "id": "azure_nsg_rule_last_updated_present",
+        "name": "NSG Rule Last Updated Timestamp Present",
+        "description": "Ensure that each NSG rule contains a lastUpdated timestamp for auditing purposes.",
+        "severity": "low",
+        "remediation": "Include a lastUpdated timestamp for each NSG rule to facilitate auditing and change tracking.",
+        "query": "all(properties.rules[*].lastUpdated != null && properties.rules[*].lastUpdated != '')"
+      }
+    ]
+  }
+  

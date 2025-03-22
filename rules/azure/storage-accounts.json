@@ -1,0 +1,79 @@
+{
+    "name": "Azure Storage Account Security Rules",
+    "version": "1.1.0",
+    "rules": [
+      {
+        "id": "azure_storage_secure_transfer_required",
+        "name": "Secure Transfer Enabled",
+        "description": "Ensure that the storage account has secure transfer enabled to enforce HTTPS for all requests.",
+        "severity": "high",
+        "remediation": "Enable secure transfer in the storage account settings.",
+        "query": "properties.supportsHttpsTrafficOnly == true"
+      },
+      {
+        "id": "azure_storage_minimum_tls_version",
+        "name": "Minimum TLS Version",
+        "description": "Ensure that the storage account has a minimum TLS version of 1.2.",
+        "severity": "medium",
+        "remediation": "Set the minimum TLS version to 1.2 in the storage account settings.",
+        "query": "properties.minimumTlsVersion == 'TLS1_2'"
+      },
+      {
+        "id": "azure_storage_network_rules",
+        "name": "Network Rule Set",
+        "description": "Ensure that the storage account has network rules configured to restrict access.",
+        "severity": "medium",
+        "remediation": "Configure virtual network rules or IP firewall rules to restrict access to the storage account.",
+        "query": "properties.networkAcls.defaultAction == 'Deny'"
+      },
+      {
+        "id": "azure_storage_encryption_enabled",
+        "name": "Encryption Enabled",
+        "description": "Ensure that the storage account has encryption enabled for data at rest.",
+        "severity": "high",
+        "remediation": "Enable encryption for the storage account.",
+        "query": "properties.encryption.services.blob.enabled == true"
+      },
+      {
+        "id": "azure_storage_public_access_disabled",
+        "name": "Public Access Disabled",
+        "description": "Ensure that public access is disabled for the storage account to prevent unauthorized data exposure.",
+        "severity": "high",
+        "remediation": "Disable public access by setting allowBlobPublicAccess to false in the storage account settings.",
+        "query": "properties.allowBlobPublicAccess == false"
+      },
+      {
+        "id": "azure_storage_blob_versioning_enabled",
+        "name": "Blob Versioning Enabled",
+        "description": "Ensure that blob versioning is enabled to maintain data history and aid in recovery.",
+        "severity": "medium",
+        "remediation": "Enable blob versioning in the storage account settings.",
+        "query": "properties.blobVersioning.enabled == true"
+      },
+      {
+        "id": "azure_storage_logging_enabled",
+        "name": "Logging Enabled",
+        "description": "Ensure that logging is enabled for the storage account to track access and configuration changes.",
+        "severity": "medium",
+        "remediation": "Enable logging for storage services in the account settings.",
+        "query": "properties.logging.enabled == true"
+      },
+      {
+        "id": "azure_storage_diagnostic_settings_enabled",
+        "name": "Diagnostic Settings Enabled",
+        "description": "Ensure that diagnostic settings are enabled to collect and analyze logs and metrics from the storage account.",
+        "severity": "medium",
+        "remediation": "Configure diagnostic settings to capture logs and metrics for the storage account.",
+        "query": "properties.diagnosticSettings.enabled == true"
+      },
+      {
+        "id": "azure_storage_advanced_threat_protection",
+        "name": "Advanced Threat Protection Enabled",
+        "description": "Ensure that advanced threat protection is enabled to detect unusual and potentially harmful access attempts.",
+        "severity": "high",
+        "remediation": "Enable advanced threat protection for the storage account.",
+        "query": "properties.advancedThreatProtectionSettings.isEnabled == true"
+      }
+    ]
+  }
+  

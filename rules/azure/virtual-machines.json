@@ -1,0 +1,143 @@
+{
+    "name": "Azure Virtual Machine Security Rules",
+    "version": "1.2.0",
+    "rules": [
+      {
+        "id": "azure_vm_boot_diagnostics_enabled",
+        "name": "Boot Diagnostics Enabled",
+        "description": "Ensure that boot diagnostics are enabled for virtual machines to help troubleshoot issues during startup.",
+        "severity": "medium",
+        "remediation": "Enable boot diagnostics in the virtual machine settings.",
+        "query": "properties.bootDiagnostics.enabled == true"
+      },
+      {
+        "id": "azure_vm_os_disk_encryption_enabled",
+        "name": "OS Disk Encryption Enabled",
+        "description": "Ensure that the operating system disk is encrypted to protect data at rest.",
+        "severity": "high",
+        "remediation": "Enable OS disk encryption on the virtual machine.",
+        "query": "properties.storageProfile.osDisk.encryption.enabled == true"
+      },
+      {
+        "id": "azure_vm_data_disk_encryption_enabled",
+        "name": "Data Disk Encryption Enabled",
+        "description": "Ensure that all data disks are encrypted to secure stored data.",
+        "severity": "high",
+        "remediation": "Enable encryption for all attached data disks.",
+        "query": "all(properties.storageProfile.dataDisks[*].encryption.enabled == true)"
+      },
+      {
+        "id": "azure_vm_agent_installed",
+        "name": "VM Agent Installed",
+        "description": "Ensure that the Azure VM agent is installed for management and security updates.",
+        "severity": "medium",
+        "remediation": "Install the Azure VM agent on the virtual machine.",
+        "query": "properties.vmAgent != null"
+      },
+      {
+        "id": "azure_vm_nsg_association",
+        "name": "NSG Association",
+        "description": "Ensure that the virtual machine's network interface is associated with a Network Security Group (NSG) to restrict inbound traffic.",
+        "severity": "high",
+        "remediation": "Associate the virtual machine's network interface with an appropriate NSG.",
+        "query": "properties.networkProfile.networkInterfaces[*].id contains 'nsg'"
+      },
+      {
+        "id": "azure_vm_auto_patching_enabled",
+        "name": "Automatic Patching Enabled",
+        "description": "Ensure that automatic operating system patching is enabled for the virtual machine to maintain up-to-date security patches.",
+        "severity": "medium",
+        "remediation": "Enable automatic patching in the virtual machine's update management settings.",
+        "query": "properties.osProfile.windowsConfiguration.enableAutomaticUpdates == true || properties.osProfile.linuxConfiguration.enableAutomaticUpdates == true"
+      },
+      {
+        "id": "azure_vm_backup_configured",
+        "name": "Backup Configured",
+        "description": "Ensure that a backup policy is configured for the virtual machine to facilitate disaster recovery.",
+        "severity": "medium",
+        "remediation": "Configure Azure Backup for the virtual machine.",
+        "query": "properties.backupPolicy != null"
+      },
+      {
+        "id": "azure_vm_vulnerability_assessment_enabled",
+        "name": "Vulnerability Assessment Enabled",
+        "description": "Ensure that vulnerability assessment is enabled to detect potential security issues on the virtual machine.",
+        "severity": "high",
+        "remediation": "Enable the vulnerability assessment extension on the virtual machine.",
+        "query": "properties.vulnerabilityAssessment != null && properties.vulnerabilityAssessment.enabled == true"
+      },
+      {
+        "id": "azure_vm_jit_access_enabled",
+        "name": "Just-In-Time Access Enabled",
+        "description": "Ensure that Just-In-Time (JIT) access is enabled to reduce exposure to port scanning and brute force attacks.",
+        "severity": "high",
+        "remediation": "Configure JIT access through Azure Security Center.",
+        "query": "properties.justInTimeAccess.enabled == true"
+      },
+      {
+        "id": "azure_vm_endpoint_protection_installed",
+        "name": "Endpoint Protection Installed",
+        "description": "Ensure that endpoint protection is installed and configured on the virtual machine to defend against malware and intrusion.",
+        "severity": "high",
+        "remediation": "Install and configure the recommended endpoint protection extension.",
+        "query": "properties.endpointProtection != null && properties.endpointProtection.enabled == true"
+      },
+      {
+        "id": "azure_vm_diagnostic_logs_configured",
+        "name": "Diagnostic Logs Configured",
+        "description": "Ensure that diagnostic logs from the virtual machine are sent to a Log Analytics Workspace for further analysis.",
+        "severity": "medium",
+        "remediation": "Configure the virtual machine to send diagnostic logs to a Log Analytics Workspace.",
+        "query": "properties.diagnosticSettings.logsSent == true"
+      },
+      {
+        "id": "azure_vm_secure_boot_enabled",
+        "name": "Secure Boot Enabled",
+        "description": "Ensure that Secure Boot is enabled for virtual machines to protect against boot-level malware (applicable for UEFI-based systems).",
+        "severity": "medium",
+        "remediation": "Enable Secure Boot in the virtual machine firmware settings.",
+        "query": "properties.osProfile.secureBootEnabled == true"
+      },
+      {
+        "id": "azure_vm_os_hardening",
+        "name": "OS Hardening Applied",
+        "description": "Ensure that baseline OS hardening configurations are applied to reduce vulnerabilities.",
+        "severity": "medium",
+        "remediation": "Apply OS hardening best practices and security benchmarks to the virtual machine.",
+        "query": "properties.osProfile.hardening == true"
+      },
+      {
+        "id": "azure_vm_secure_remote_access",
+        "name": "Secure Remote Access Configuration",
+        "description": "Ensure that remote access (RDP/SSH) is securely configured with restricted IP ranges.",
+        "severity": "high",
+        "remediation": "Restrict remote access ports through NSG or firewall rules to specific IP ranges or via VPN.",
+        "query": "properties.remoteAccess.secureConfigured == true"
+      },
+      {
+        "id": "azure_vm_monitoring_agent_installed",
+        "name": "Monitoring Agent Installed",
+        "description": "Ensure that a monitoring agent is installed on the virtual machine for security and performance monitoring.",
+        "severity": "medium",
+        "remediation": "Install and configure a monitoring agent such as the Log Analytics Agent on the virtual machine.",
+        "query": "properties.extensions.any(extension => extension.name == 'LogAnalyticsAgent')"
+      },
+      {
+        "id": "azure_vm_managed_identity_enabled",
+        "name": "Managed Identity Enabled",
+        "description": "Ensure that the virtual machine is configured with a managed identity for secure resource access.",
+        "severity": "medium",
+        "remediation": "Enable system-assigned managed identity for the virtual machine.",
+        "query": "properties.identity != null && properties.identity.type == 'SystemAssigned'"
+      },
+      {
+        "id": "azure_vm_ssh_key_authentication_enforced",
+        "name": "SSH Key Authentication Enforced",
+        "description": "Ensure that Linux virtual machines enforce SSH key authentication by disabling password-based authentication.",
+        "severity": "high",
+        "remediation": "Configure the SSH daemon to disable password authentication and require key-based authentication.",
+        "query": "properties.osProfile.linuxConfiguration.disablePasswordAuthentication == true"
+      }
+    ]
+  }
+  
