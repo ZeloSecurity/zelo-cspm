@@ -1,7 +1,7 @@
 {
     "id": "s3-no-public-access",
     "title": "S3 Bucket Public Access Check",
-    "description": "Ensure that the S3 bucket does not allow public read or write access by verifying that the bucket policy and ACL do not grant permissions to all principals.",
+    "description": "Ensure that the S3 bucket does not allow public read or write access by verifying that the bucket policy, ACL, and Public Access Block settings are correctly configured.",
     "severity": "high",
     "conditions": [
       {
@@ -13,8 +13,28 @@
         "field": "ACL",
         "operator": "not_in",
         "value": ["public-read", "public-read-write"]
+      },
+      {
+        "field": "PublicAccessBlockConfiguration.BlockPublicAcls",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "PublicAccessBlockConfiguration.BlockPublicPolicy",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "PublicAccessBlockConfiguration.IgnorePublicAcls",
+        "operator": "equals",
+        "value": true
+      },
+      {
+        "field": "PublicAccessBlockConfiguration.RestrictPublicBuckets",
+        "operator": "equals",
+        "value": true
       }
     ],
-    "remediation": "Review and update the S3 bucket policy and ACL to ensure that public access is disabled. Remove any statements that grant access to \"Principal\": \"*\" and change ACL settings to private."
+    "remediation": "Review and update the S3 bucket policy, ACL, and Public Access Block settings to ensure that public access is disabled. Remove any statements that grant access to \"Principal\": \"*\" and change ACL settings to private. Additionally, ensure all Public Access Block settings are enabled."
   }
   
