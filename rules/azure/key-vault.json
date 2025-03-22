@@ -1,0 +1,119 @@
+{
+    "name": "Azure Key Vault Security Rules",
+    "version": "1.1.0",
+    "rules": [
+      {
+        "id": "azure_key_vault_public_network_access_disabled",
+        "name": "Public Network Access Disabled",
+        "description": "Ensure that the Key Vault does not allow public network access to reduce exposure to unauthorized requests.",
+        "severity": "high",
+        "remediation": "Disable public network access by setting the publicNetworkAccess property to 'Disabled' in the Key Vault configuration.",
+        "query": "properties.publicNetworkAccess == 'Disabled'"
+      },
+      {
+        "id": "azure_key_vault_firewall_enabled",
+        "name": "Firewall Enabled",
+        "description": "Ensure that a firewall is enabled to restrict network access to the Key Vault.",
+        "severity": "high",
+        "remediation": "Configure the Key Vault firewall by setting trusted virtual networks or IP addresses and ensure that the default action is set to 'Deny'.",
+        "query": "properties.networkAcls.defaultAction == 'Deny'"
+      },
+      {
+        "id": "azure_key_vault_soft_delete_enabled",
+        "name": "Soft Delete Enabled",
+        "description": "Ensure that soft delete is enabled for the Key Vault to protect against accidental or malicious deletion.",
+        "severity": "high",
+        "remediation": "Enable soft delete in the Key Vault settings to allow recovery of deleted vaults or keys.",
+        "query": "properties.enableSoftDelete == true"
+      },
+      {
+        "id": "azure_key_vault_purge_protection_enabled",
+        "name": "Purge Protection Enabled",
+        "description": "Ensure that purge protection is enabled to prevent permanent deletion of Key Vault data.",
+        "severity": "high",
+        "remediation": "Enable purge protection for the Key Vault to ensure that deleted data cannot be permanently removed until the retention period expires.",
+        "query": "properties.enablePurgeProtection == true"
+      },
+      {
+        "id": "azure_key_vault_diagnostic_settings_enabled",
+        "name": "Diagnostic Settings Enabled",
+        "description": "Ensure that diagnostic settings are configured to capture logs and metrics for auditing and monitoring purposes.",
+        "severity": "medium",
+        "remediation": "Configure diagnostic settings to send logs and metrics from the Key Vault to a Log Analytics workspace or a storage account.",
+        "query": "properties.diagnosticSettings.enabled == true"
+      },
+      {
+        "id": "azure_key_vault_key_rotation_enabled",
+        "name": "Key Rotation Policy Enabled",
+        "description": "Ensure that a key rotation policy is in place to automatically rotate keys periodically.",
+        "severity": "medium",
+        "remediation": "Configure and enable a key rotation policy in the Key Vault to ensure cryptographic keys are rotated on a regular basis.",
+        "query": "properties.rotationPolicy.enabled == true"
+      },
+      {
+        "id": "azure_key_vault_least_privilege",
+        "name": "Least Privilege Access Policies",
+        "description": "Ensure that Key Vault access policies follow the principle of least privilege by limiting permissions to only what is necessary.",
+        "severity": "medium",
+        "remediation": "Review and restrict the permissions granted in the Key Vault access policies to minimize exposure of sensitive operations.",
+        "query": "none(properties.accessPolicies[*].permissions.keys contains '*')"
+      },
+      {
+        "id": "azure_key_vault_network_bypass_disabled",
+        "name": "Network Bypass Disabled",
+        "description": "Ensure that network bypass is disabled to prevent unintended access from Azure services or other networks.",
+        "severity": "medium",
+        "remediation": "Set the networkAcls.bypass property to 'None' to disable bypass and enforce the firewall rules.",
+        "query": "properties.networkAcls.bypass == 'None'"
+      },
+      {
+        "id": "azure_key_vault_advanced_threat_protection_enabled",
+        "name": "Advanced Threat Protection Enabled",
+        "description": "Ensure that advanced threat protection is enabled for the Key Vault to monitor for suspicious activities.",
+        "severity": "high",
+        "remediation": "Enable advanced threat protection in the Key Vault settings.",
+        "query": "properties.advancedThreatProtection.enabled == true"
+      },
+      {
+        "id": "azure_key_vault_least_privilege_secrets",
+        "name": "Least Privilege for Secrets",
+        "description": "Ensure that Key Vault access policies for secrets do not grant wildcard permissions.",
+        "severity": "medium",
+        "remediation": "Restrict secret permissions to only required actions.",
+        "query": "none(properties.accessPolicies[*].permissions.secrets contains '*')"
+      },
+      {
+        "id": "azure_key_vault_least_privilege_certificates",
+        "name": "Least Privilege for Certificates",
+        "description": "Ensure that Key Vault access policies for certificates do not grant wildcard permissions.",
+        "severity": "medium",
+        "remediation": "Restrict certificate permissions to only required actions.",
+        "query": "none(properties.accessPolicies[*].permissions.certificates contains '*')"
+      },
+      {
+        "id": "azure_key_vault_private_endpoint_configured",
+        "name": "Private Endpoint Configured",
+        "description": "Ensure that the Key Vault is configured with a private endpoint to restrict access to a private network.",
+        "severity": "medium",
+        "remediation": "Configure a private endpoint for the Key Vault to enhance security.",
+        "query": "length(properties.privateEndpointConnections) > 0"
+      },
+      {
+        "id": "azure_key_vault_rbac_enabled",
+        "name": "RBAC Authorization Enabled",
+        "description": "Ensure that RBAC authorization is enabled for the Key Vault, if applicable, to manage access using Azure RBAC.",
+        "severity": "medium",
+        "remediation": "Enable RBAC authorization in the Key Vault settings if using Azure RBAC for access management.",
+        "query": "properties.enableRbacAuthorization == true"
+      },
+      {
+        "id": "azure_key_vault_required_tags",
+        "name": "Required Tags Present",
+        "description": "Ensure that the Key Vault has all required tags (e.g., Environment, Owner) applied for governance and tracking.",
+        "severity": "low",
+        "remediation": "Apply the required tags to the Key Vault.",
+        "query": "all(['Environment', 'Owner'] subsetOf keys(properties.tags))"
+      }
+    ]
+  }
+  
