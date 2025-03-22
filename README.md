@@ -8,6 +8,7 @@
 - **Vulnerability Management**: Baseline scanning for known CVEs with the option for ML-based prioritization.
 - **Compliance Monitoring**: Basic CIS checks are available for free, with advanced reporting for PCI, HIPAA, SOC 2, and more.
 - **Flexible Deployment**: Supports both agentless scanning for quick setup and agent-based scanning for continuous monitoring.
+- **CI/CD Pipeline Integration & Container Image Scanning**: Seamlessly integrate Zelo CSPM into your development pipelines to scan container images and infrastructure as code, catching vulnerabilities early in the build process.
 - **Extensible Rules Engine**: Community-driven rules that can be extended and customized over time.
 
 ## Repository Structure
