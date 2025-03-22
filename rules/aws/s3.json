@@ -1,0 +1,20 @@
+{
+    "id": "s3-no-public-access",
+    "title": "S3 Bucket Public Access Check",
+    "description": "Ensure that the S3 bucket does not allow public read or write access by verifying that the bucket policy and ACL do not grant permissions to all principals.",
+    "severity": "high",
+    "conditions": [
+      {
+        "field": "Policy",
+        "operator": "does_not_contain",
+        "value": "Principal\": \"*\""
+      },
+      {
+        "field": "ACL",
+        "operator": "not_in",
+        "value": ["public-read", "public-read-write"]
+      }
+    ],
+    "remediation": "Review and update the S3 bucket policy and ACL to ensure that public access is disabled. Remove any statements that grant access to \"Principal\": \"*\" and change ACL settings to private."
+  }
+  
